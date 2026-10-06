@@ -2,41 +2,47 @@
 import { useState } from "react";
 
 export default function Home() {
-  const [show, setShow] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
+  const [showPay, setShowPay] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState({name:"", price:"", ugx:0});
   const [user, setUser] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+
+  const MTN_NUMBER = "0761388814";
+  const AIRTEL_NUMBER = "0741094332";
+  const WHATSAPP = "256761388814";
+
+  const openPay = (name:string, price:string, ugx:number) => {
+    if(!user){ alert("Please Sign In First!"); setShowLogin(true); return; }
+    setSelectedPlan({name, price, ugx});
+    setShowPay(true);
+  };
+
+  const handlePay = () => {
+    if(!phone) return alert("Enter your MTN/Airtel number!");
+    const msg = NEW PAYMENT - QURAISHMINO%0A%0APlan: ${selectedPlan.name} - ${selectedPlan.price}%0ACustomer: ${user} (${email})%0ACustomer Phone: ${phone}%0AAmount: ${selectedPlan.price}%0A%0APlease check MoMo and activate!;
+    const waLink = https://wa.me/${WHATSAPP}?text=${msg};
+    window.open(waLink, "_blank");
+    alert(Pay ${selectedPlan.price} to MTN ${MTN_NUMBER} or Airtel ${AIRTEL_NUMBER}, then send proof on WhatsApp!);
+    setShowPay(false);
+  };
 
   return (
-    <div style={{background:'black', color:'white', minHeight:'100vh', fontFamily:'Arial', padding:'0'}}>
+    <div style={{background:'black', color:'white', minHeight:'100vh', fontFamily:'Arial'}}>
       <div style={{display:'flex', justifyContent:'space-between', padding:'20px', borderBottom:'1px solid #222'}}>
         <h1 style={{color:'gold', fontWeight:'bold'}}>QURAISHMINO 🇺🇬</h1>
-        <button onClick={()=>{alert("Button works!"); setShow(true);}} style={{background:'gold', color:'black', padding:'10px 20px', borderRadius:'20px', fontWeight:'bold', border:'none'}}>Sign In</button>
-      </div>
-
-      {user && <div style={{background:'gold', color:'black', padding:'10px', textAlign:'center', fontWeight:'bold'}}>Welcome {user}! You are signed in ✅</div>}
-
-      {show && (
-        <div style={{position:'fixed', top:0, left:0, right:0, bottom:0, background:'rgba(0,0,0,0.95)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:99}}>
-          <div style={{background:'#222', padding:'25px', borderRadius:'15px', width:'300px'}}>
-            <h3 style={{marginBottom:'15px', fontWeight:'bold'}}>Sign In - Quraishmino</h3>
-            <input value={email} onChange={e=>setEmail(e.target.value)} placeholder="Enter your email" style={{width:'100%', padding:'12px', borderRadius:'8px', background:'#111', border:'1px solid #444', color:'white', marginBottom:'10px'}}/>
-            <input type="password" placeholder="Password" style={{width:'100%', padding:'12px', borderRadius:'8px', background:'#111', border:'1px solid #444', color:'white', marginBottom:'15px'}}/>
-            <button onClick={()=>{setUser(email.split("@")[0]); setShow(false); alert("Signed in as " + email);}} style={{width:'100%', padding:'12px', background:'gold', color:'black', fontWeight:'bold', borderRadius:'8px', border:'none'}}>Sign In Now</button>
-            <button onClick={()=>setShow(false)} style={{width:'100%', marginTop:'10px', background:'transparent', color:'#888', border:'none'}}>Close</button>
-          </div>
+        <div style={{display:'flex', gap:'8px', alignItems:'center'}}>
+          {user? <span style={{fontSize:'13px', color:'#aaa'}}>Hi {user}</span> : null}
+          <button onClick={()=>setShowLogin(true)} style={{background:user?'#222':'gold', color:user?'white':'black', padding:'8px 16px', borderRadius:'20px', fontWeight:'bold', border:'none'}}>{user? user : 'Sign In'}</button>
         </div>
-      )}
-
-      <div style={{textAlign:'center', padding:'50px 20px'}}>
-        <h2 style={{fontSize:'36px', fontWeight:'bold'}}>Unlimited Movies<br/><span style={{color:'gold'}}>20,000 UGX</span></h2>
-        <p style={{color:'#aaa', marginTop:'10px'}}>MTN MoMo | Airtel Money</p>
       </div>
 
-      <div style={{display:'flex', gap:'10px', justifyContent:'center', padding:'20px'}}>
-        <div style={{background:'#111', padding:'20px', borderRadius:'12px', width:'150px', textAlign:'center', border:'1px solid #333'}}><h3>Basic</h3><div style={{color:'gold', fontWeight:'bold', margin:'8px 0'}}>20K UGX</div></div>
-        <div style={{background:'gold', padding:'20px', borderRadius:'12px', width:'150px', textAlign:'center', color:'black'}}><h3>Premium</h3><div style={{fontWeight:'bold', margin:'8px 0'}}>35K UGX</div></div>
-        <div style={{background:'#111', padding:'20px', borderRadius:'12px', width:'150px', textAlign:'center', border:'1px solid #333'}}><h3>VIP</h3><div style={{color:'gold', fontWeight:'bold', margin:'8px 0'}}>70K UGX</div></div>
-      </div>
-    </div>
-  );
-}
+      {showLogin && (
+        <div style={{position:'fixed', inset:0, background:'rgba(0,0,0,0.95)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:100}}>
+          <div style={{background:'#111', padding:'25px', borderRadius:'15px', width:'300px', border:'1px solid #333'}}>
+            <h3 style={{fontWeight:'bold', marginBottom:'15px'}}>Sign In</h3>
+            <input value={email} onChange={e=>setEmail(e.target.value)} placeholder="Email" style={{width:'100%', padding:'12px', borderRadius:'8px', background:'#222', border:'1px solid #444', color:'white', marginBottom:'10px'}}/>
+            <input type="password" placeholder="Password" style={{width:'100%', padding:'12px', borderRadius:'8px', background:'#222', border:'1px solid #444', color:'white', marginBottom:'15px'}}/>
+            <button onClick={()=>{setUser(email.split("@")[0]||"User"); setShowLogin(false);}} style={{width:'100%', padding:'12px', background:'gold', color:'black', fontWeight:'bold', borderRadius:'8px', border:'none'}}>Sign In</button>
+            <button onClick={()=>setShowLogin(false)} style={{width:'100%', marginTop:'10px', background:'transparent', color:'#666', border:'none
